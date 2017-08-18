@@ -22,8 +22,9 @@ public class TetrationClient {
     protected String host = "";
     protected String apiKey = "";
     protected String apiSecret = "";
-    protected int timeOut = 2000; // 2 seconds, in milliseconds;
+    protected int connTimeOut = 2000; // 2 seconds, in milliseconds;
     protected int readTimeOut = 60000; // 60 seconds;
+    protected boolean printHeader = false;
 
     private static final SimpleDateFormat CISCO_SDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     private static final String SHA256 = "HmacSHA256";
@@ -63,7 +64,7 @@ public class TetrationClient {
             conn.setUseCaches(false);
             conn.setDoInput(true);
             conn.setDoOutput(true);
-            conn.setConnectTimeout(this.timeOut);
+            conn.setConnectTimeout(this.connTimeOut);
             conn.setReadTimeout(this.readTimeOut);
 
             conn.setRequestProperty(USER_AGENT_KEY, USER_AGENT_VALUE);
@@ -109,6 +110,30 @@ public class TetrationClient {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    public void setPrintHeader(boolean flag) {
+        this.printHeader = flag;
+    }
+
+    public boolean getPrintHeader() {
+        return this.printHeader;
+    }
+
+    public void setReadTimeOut(int timeOut) {
+        this.readTimeOut = timeOut;
+    }
+
+    public int getReadTimeOut() {
+        return this.readTimeOut;
+    }
+
+    public void setConnTimeOut(int timeOut) {
+        this.connTimeOut = timeOut;
+    }
+
+    public int getConnTimeOut() {
+        return this.connTimeOut;
     }
 
     private String getCurrentDate() {
@@ -200,6 +225,10 @@ public class TetrationClient {
             return "";
         }
 
+        if (this.printHeader) {
+            System.out.println(getRequestContent(conn));
+        }
+
         return doGet(conn);
     }
 
@@ -255,6 +284,10 @@ public class TetrationClient {
 
         if (!setupConnection(conn, MethodPost, uri, data)) {
             return "";
+        }
+
+        if (this.printHeader) {
+            System.out.println(getRequestContent(conn));
         }
 
         return doPost(conn, data);

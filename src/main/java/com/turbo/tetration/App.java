@@ -62,16 +62,31 @@ public class App
     }
 
     public static void main(String[] args) {
-        // write your code here
-        String host = "https://perseus-aus.cisco.com";
-        String apiKey = "962c9079f45244c79120c92c3ae23827";
-        String apiSecret = "4f20165c0cdd72c3857b00425dbe8a2b3ba02160";
+        if (args.length < 4) {
+            System.out.println("Usage: App <host> <apiKey> <apiSecret> <printHeader> [connTimeout] [readTimeout]");
+            return;
+        }
+
+        int connTimeOut = 2000; //2 seconds
+        int readTimeOut = 60000; // 1 minute
+        String host = args[0];
+        String apiKey = args[1];
+        String apiSecret = args[2];
+        boolean printHeader = Boolean.parseBoolean(args[3]);
+
+        if (args.length > 4) {
+            connTimeOut = Integer.parseInt(args[4]);
+        }
+        if (args.length > 5) {
+            readTimeOut = Integer.parseInt(args[5]);
+        }
 
         TetrationClient client = new TetrationClient(host, apiKey, apiSecret);
+        client.setPrintHeader(printHeader);
+        client.setConnTimeOut(connTimeOut);
+        client.setReadTimeOut(readTimeOut);
 
         //printConnection(client);
-
-        test(client);
         test(client);
 
         testFlowTraffic(client);
