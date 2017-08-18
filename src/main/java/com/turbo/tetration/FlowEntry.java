@@ -1,8 +1,5 @@
 package com.turbo.tetration;
 
-/**
- * Created by steven on 8/17/17.
- */
 public class FlowEntry {
     String dst_address;
     String dst_hostname;
